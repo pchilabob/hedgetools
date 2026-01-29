@@ -26,11 +26,7 @@ const sortOptions = [
 ] as const;
 
 export default function App() {
-  const hasApi = typeof window !== 'undefined' && !!window.cs2;
-  const [apiReady] = useState<boolean>(hasApi);
-  const [apiError] = useState<string | null>(
-    hasApi ? null : 'IPC bridge не загружен. Проверьте preload и сборку.'
-  );
+
   const [view, setView] = useState<View>('library');
   const [maps, setMaps] = useState<MapOption[]>([]);
   const [nades, setNades] = useState<NadeRecord[]>([]);
@@ -44,19 +40,12 @@ export default function App() {
     : null;
 
   useEffect(() => {
-    if (!apiReady) return;
-    window.cs2.listMaps().then(setMaps);
-  }, [apiReady]);
 
-  useEffect(() => {
-    if (!apiReady) return;
-    refreshNades();
-  }, [apiReady, filters]);
 
   const filteredMaps = useMemo(() => maps.map((m) => m.name), [maps]);
 
   const refreshNades = () => {
-    if (!apiReady) return;
+
     window.cs2.listNades(filters).then(setNades);
   };
 
@@ -105,14 +94,14 @@ export default function App() {
 
   const addMap = async () => {
     if (!mapInput.trim()) return;
-    if (!apiReady) return;
+
     const updated = await window.cs2.addMap(mapInput.trim());
     setMaps(updated);
     setMapInput('');
   };
 
   const handleExport = async () => {
-    if (!apiReady) return;
+
     const data = await window.cs2.exportJson();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -124,7 +113,7 @@ export default function App() {
   };
 
   const handleImport = async (file: File) => {
-    if (!apiReady) return;
+
     const text = await file.text();
     const data = JSON.parse(text);
     await window.cs2.importJson(data);
@@ -137,7 +126,7 @@ export default function App() {
       setFileStatus('');
       return;
     }
-    if (!apiReady) return;
+
     const exists = await window.cs2.fileExists(path);
     setFileStatus(exists ? 'Файл найден' : 'Файл не найден');
   };
@@ -155,12 +144,6 @@ export default function App() {
         </div>
       </header>
 
-      {!apiReady && apiError && (
-        <section className="panel">
-          <h2>Ошибка загрузки</h2>
-          <p className="muted">{apiError}</p>
-        </section>
-      )}
 
       {view === 'library' && (
         <section className="grid">
