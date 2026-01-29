@@ -1,0 +1,46 @@
+{
+  "name": "hedgetools",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/main/main.js",
+  "author": "",
+  "description": "CS2 Nade Guide MVP",
+  "scripts": {
+    "dev": "concurrently -k \"tsc -p tsconfig.main.json --watch\" \"tsc -p tsconfig.preload.json --watch\" \"vite\" \"npm:dev:electron\"",
+    "dev:electron": "wait-on dist/main/main.js dist/preload/index.js tcp:5173 && electron .",
+    "build": "vite build && tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && electron-builder",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.0.1",
+    "electron": "^30.1.2",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.phillabob.cs2nadeguide",
+    "productName": "CS2 Nade Guide",
+    "files": [
+      "dist/**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
