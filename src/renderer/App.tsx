@@ -26,6 +26,7 @@ const sortOptions = [
 ] as const;
 
 export default function App() {
+
   const [view, setView] = useState<View>('library');
   const [maps, setMaps] = useState<MapOption[]>([]);
   const [nades, setNades] = useState<NadeRecord[]>([]);
@@ -39,16 +40,12 @@ export default function App() {
     : null;
 
   useEffect(() => {
-    window.cs2.listMaps().then(setMaps);
-  }, []);
 
-  useEffect(() => {
-    refreshNades();
-  }, [filters]);
 
   const filteredMaps = useMemo(() => maps.map((m) => m.name), [maps]);
 
   const refreshNades = () => {
+
     window.cs2.listNades(filters).then(setNades);
   };
 
@@ -97,12 +94,14 @@ export default function App() {
 
   const addMap = async () => {
     if (!mapInput.trim()) return;
+
     const updated = await window.cs2.addMap(mapInput.trim());
     setMaps(updated);
     setMapInput('');
   };
 
   const handleExport = async () => {
+
     const data = await window.cs2.exportJson();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -114,6 +113,7 @@ export default function App() {
   };
 
   const handleImport = async (file: File) => {
+
     const text = await file.text();
     const data = JSON.parse(text);
     await window.cs2.importJson(data);
@@ -126,6 +126,7 @@ export default function App() {
       setFileStatus('');
       return;
     }
+
     const exists = await window.cs2.fileExists(path);
     setFileStatus(exists ? 'Файл найден' : 'Файл не найден');
   };
@@ -142,6 +143,7 @@ export default function App() {
           <button onClick={openAddForm}>Добавить</button>
         </div>
       </header>
+
 
       {view === 'library' && (
         <section className="grid">
