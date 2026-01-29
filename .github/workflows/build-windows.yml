@@ -21,14 +21,12 @@ jobs:
       - name: Build
         run: npm run build -- --publish never
 
-      - name: Package
-        run: npm run dist
-
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-exe
           path: |
-            dist/**
-            release/**
-            out/**
+            dist/*.exe
+            dist/*.msi
+            dist/*.blockmap
+            dist/win-unpacked/**
